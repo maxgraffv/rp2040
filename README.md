@@ -113,3 +113,101 @@ DMA - Direct Memory Access
 - - CTRL - configure channel behaviour
 
 FIFO - Fist In First Out buffer, temporarily store data in a sequential manner
+
+### Memory
+RP2040 has embedded ROM and SRAM and access to external Flash via QSPI
+
+ROM
+- 16kB at address 0x00
+- Contains
+- - initial startup routine
+- - flash boot sequence
+- - flash programming routine
+- - USB mass store device with UF2
+- - Utility libraries such as fast floating point
+RP2040 bootrom is available at pico-bootrom
+
+SRAM
+- 264kB physically partitioned into 6 Banks
+- Four 16k * 32bit banks (64kB)
+- Two 1k * 32bit banks (4kB)
+- Mapped to address starting at 0x20000000
+
+First 256kB region is word stripped across 4 larger banks
+
+| System Address | Bank | SRAM word address |
+|----------------|------|-------------------|
+| 0x20000000     |   0  |         0         |
+| 0x20000004     |   1  |         0         |
+| 0x20000008     |   2  |         0         |
+| 0x2000000c     |   3  |         0         |
+| 0x20000010     |   0  |         1         |
+| 0x20000014     |   1  |         1         |
+| 0x20000018     |   2  |         1         |
+| 0x2000001c     |   3  |         1         |
+|      ...       |  ... |        ...        |
+
+
+4kB Banks start at 0x20040000 and 0x20041000
+
+Software may choose to use each of those banks per core
+
+Other on-chip memory
+- if XIP caching disabled,
+    the cache becomes available as 16kB memory at 0x15000000
+- if USB not used,
+    USB DATA DPRAM can be used 4kB memory at 0x50100000
+
+FLASH (external)
+- accessed via the QSPI interface
+    using the XIP (execute-in-place) hardware
+    This allowes external flash memory to be addressed by the system as if it were an internal memory
+- Memory window starts at 0x10000000
+
+XIP Cache
+- 16kB
+- if disabled by clearing CTRL.EN, region behaves as additional 16kB SRAM bank
+
+#### Bootrom
+- size limited to 16kB
+- contains
+- - Core 0 initial boot sequence
+- - Core 1 low power wait and launch protocol
+- - USB MSC bootloader with UF2 support
+- - USB Picoboot bootloader interface
+- - Routines for programming and manipulating example. flash
+- - Fast floating point library
+- - Fast bit counting/manipulation functions
+- - Fast memory fill/copy functions
+
+RPI-RPI2 Drive
+- appears as standard 128MB flash-drive
+- formatted as single partitioned FAT16
+
+Device ID
+- idVendor 0x2e8a
+- idProduct 0x0003
+
+### PLL - phase locked loop
+- generates pll_sys 133MHz system clock
+- generates pll_usb 48MHz USB reference clock
+- configurable based on used crystal
+
+Crystal 
+RP2040 supports 1MHz to 15MHz crystal
+
+Internal Ring Oscillator is configurable but cannot provide accuracy because it varies based on temperature, voltage etc.
+
+External Oscillator
+- higher power consumption
+- slow startup time (> 1ms)
+- fixed, low frequency
+
+### Sys Info
+Registers start at 0x40000000 (SYSINFO_BASE in SDK)
+
+| Offset |      Name     |      Info     |
+|--------|---------------|---------------|
+|  0x00  |    CHIP_ID    |    Chip ID    |
+|  0x04  |    PLATFORM   | Allows software to know what environment it is running in    |
+|  0x40  | GITREF_RP2040 | Git hash of chip source identifies chip version |
