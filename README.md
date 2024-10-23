@@ -82,3 +82,34 @@ DAP - Debug Access Port
     Provides Serial Wire debug port and connects to processor's slave port
 
 Reset control - controls: debug reset, M0+ core reset, PMU reset
+
+PMU - Power Management Unit
+
+WFI - Wait For Interrupt, provides a mechanism for hardware support of entry to sleep state
+
+WFE - Wait For Event, provides a mechanism for software to suspend program execution until a wake-up condition occurs
+
+MPU - Memory Protection Unit
+- 8 user-configurable memory regions
+- 8 sub-regions disables, per region
+- Execute Nver Support (XN)
+- Default Memory Map Support
+
+DMA - Direct Memory Access
+- has seperate read and write master connections
+- performs bulk data transfers on processors behalf
+- let's processor attend other tasks or enter sleep
+- data throughput is higher(a lot higher) than of the processor
+- usual scenarios:
+- - Memory to Peripheral
+- - Peripheral to Memory
+- - Memory to Memory
+- transfer size can be 32, 16 or 8 bit
+- channel configuration
+- - each channel has 4 registers
+- - READ_ADDR - pointer to next address to be read from
+- - WRITE_ADDR - pointer to next address to be written to
+- - TRANS_COUNT - number of transfers remaining in a sequence
+- - CTRL - configure channel behaviour
+
+FIFO - Fist In First Out buffer, temporarily store data in a sequential manner
