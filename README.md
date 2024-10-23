@@ -49,7 +49,7 @@ Access takes 2 cycles at minimum (setup phase, access phase)
 
 
 ## CORTEX M0+
-*** Configuration for RP2040 ***
+**Configuration for RP2040**
 - clock gating
 - little endian
 - 4 breakpoints
@@ -59,10 +59,10 @@ Access takes 2 cycles at minimum (setup phase, access phase)
 - 8 MPU (Memory Protecion Unit) regions
 - All regsiters reset on powerup
 
-*** Architecture ***
+**Architecture**
 - ARM v6-M
 
-*** M0+ Features ***
+**M0+ Features**
 - ARM v6-M Thumb Instruction Set
 - 24bit SysTick Timer
 - deterministic, low-latency interrupt handling
@@ -71,7 +71,7 @@ Access takes 2 cycles at minimum (setup phase, access phase)
 - Low power sleep mode entry - using WFI, WFE or return from interrupt
 
 ## DMA
-*** Direct Memory Access ***
+**Direct Memory Access**
 - has seperate read and write master connections
 - performs bulk data transfers on processors behalf
 - let's processor attend other tasks or enter sleep
