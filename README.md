@@ -1,13 +1,13 @@
 # rp2040
 Description and examples for RP2040 elements, subsystems etc.
 
-##Table Of Content
-- [System Description]
+## Table Of Content
+- [System Description](#system-description)
 
 
 
 
-###System description
+### System description
 - Arm Cortex M0+
 - 133MHz
 - SRAM 264kB - addressed as one, physically partitioned into 6 banks
