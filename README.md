@@ -1,6 +1,6 @@
 # rp2040
-<!-- ![rp2040](readme_images/rp2040.png)   -->
-<img src="readme_images/rp2040.png" style="width:30%"/>
+![rp2040](readme_images/rp2040.png)  
+<!-- <img src="readme_images/rp2040.png" style="width:30%"/> -->
 Description and examples for RP2040 elements, subsystems etc.
 
 ## Table Of Content
