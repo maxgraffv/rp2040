@@ -219,3 +219,26 @@ Registers start at 0x40000000 (SYSINFO_BASE in SDK)
 |  0x00  |    CHIP_ID    |    Chip ID    |
 |  0x04  |    PLATFORM   | Allows software to know what environment it is running in    |
 |  0x40  | GITREF_RP2040 | Git hash of chip source identifies chip version |
+
+
+
+#### CHIP_ID register
+| bits   |      Name          |
+|--------|--------------------|
+|  31:28 |    Revision        |
+|  27:12 |    Part            |
+|  11:0  |    Manufacturer    |
+
+
+
+#### PLATFORM register
+| bits   |      Name          |
+|--------|--------------------|
+|  31:2  |       Reserved     |
+|  1     |       ASIC         |
+|  0     |       FPGA         |
+
+#### GITREF_RP2040 register
+| bits   |      Name          |
+|--------|--------------------|
+|  31:0  |  Git hash of chip source        |
