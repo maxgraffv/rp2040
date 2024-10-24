@@ -243,3 +243,141 @@ Registers start at 0x40000000 (SYSINFO_BASE in SDK)
 | bits   |      Name          |
 |--------|--------------------|
 |  31:0  |  Git hash of chip source        |
+
+
+## Peripherals
+
+
+
+
+
+
+### I2C
+
+#### I2C Overview
+I2C is a synchronous serial interface  
+
+I2C bus consists of two bus lines:
+- SDA - Serial Data
+- SCL - Serial Clock
+When Idle, both lines are pulled high.  
+SDA line is bidirectional, changes only when SCL is low. Except for STOP, START and RESTART conditions.  
+
+Master generates clock and controls the data transfer  
+Slave transmits or receives data from the master  
+
+I2C allows multiple masters on the bus, hence it uses arbitration procedure to determine bus ownership.  
+
+Master transmits a START/RESTART condition  
+    followed by slave address + the control bit (R/W) . 
+    to determine if master wants to write (transmit) or read (receive) the data.  
+
+Slave sends an ACK after the address  
+
+If Master is writing to slave, the receiver gets 1 byte of data, it continues until Master terminates the transmission with a STOP condition
+
+If the Master is reading to a slave, the receiver gets 1 byte of data and Master sends an ACK  
+    The transaction continues until the master termiantes it by NACK after the last byte.
+    Then Master issues a STOP or addresses another slave issuing a RESTART.
+
+Conditions:
+- START - SDA goes high to low, while SCL is high
+- STOP - SDA goes low to high, while SCL is high
+
+##### 7bit address format
+
+| S | A6 ... A0 | R/W | ACK |
+|---|-----------|-----|-----|
+| START | SLAVE Address| Read/Write bit | Acknowledge - sent by slave | 
+
+R/W = 0 - MASTER writes to SLAVE
+R/W = 1 - MASTER reads from SLAVE
+
+##### 10bit address format
+2 Bytes are transferred
+
+| S | 1 1 1 0 | A9 A8 | R/W | ACK |A7 ... A0 | ACK |
+|---|---------|---|----|----|-----|-----|----------|-----|
+| START | Notifies of 10bit addressing | SLAVEaddress [9:8] | Read/Write bit | Sent by slave | SLAVE address [7:0] | Sent by slave |
+
+
+
+
+
+
+#### I2C in RP2040
+RP2040's I2C controller is based on Synopsys DW_apb_i2c IP  
+RP2040 has 2 instances of said I2C controller (i2c0 and i2c1)  
+
+Supports:
+- Master and Slave Mode (Master as Default)
+- Modes:
+- - Standard[100kbps]
+- - Fast[400kbps]
+- - Fast mode Plus[1000kbps]
+- Default Slave address 0x055
+- Supports 10bit addressing in Master Mode
+- 16 element transmit buffer
+- 16 element recieve buffer
+- Can be driven from DMA
+- Can generate interrupts
+
+Clocking:  
+I2C controllers are connected to clk_sys, including ic_clk
+
+GPIO Pads Configuration  
+- Pull-Up enabled (advised to put external pull-ups as well)
+- slew rate limited
+- schmitt trigger enabled
+
+I2C Controller contains
+- AMBA Bus Interface Unit
+- Register File
+- Slave State Machine
+- Master State Machine
+- Clk Generator
+- Rx Shift
+- Tx Shift
+- Rx Filter
+- Synchronizer
+- DMA Interface
+- Interrupt Controller
+- Toggle
+- RX FIFO
+- TX FIFO
+(PAGE 443 of RP2040 documentation)
+
+
+When operating as I2C MASTER, putting data to the transmit FIFO causes a START generation  
+Writin a 1 to IC_DATA_CMD.STOP causes a STOP condition 
+    STOP is not issued if the bit is not set, even if FIFO is empty
+
+When operating as I2C SLAVE, DW_apb_i2c doesn't generate START and STOP  
+If read request is made, the SCL line is held low until read data has been supplied  
+    This stalls the I2C bus until read data is provided to the slave DW_apb_i2c  
+    or until the DW_apb_i2c is disabled by writing a 0 to IC_ENABLE.ENABLE
+
+
+
+DW_apb_i2c supports mixed write and read combined format transactions in both 7bit and 10bit addressing modes  
+
+It does not support mixed address format, which is 7bit address transaction, followed by a 10bit address transaction and vice versa  
+
+To initiate combined format transfer set IC_CON.IC_RESTART_EN to 1  
+With this value set and operating as Master, in that case after completing a transfer, DW_apb_i2c checks transmit FIFO and executes the next transfer.
+
+If direction is different from previous one, combined format is issued if transmit FIFO is empty when current transfer finishes IC_DATA_CMD.STOP is checked  
+    if STOP bit is set to 1, STOP is issued  
+    if STOP bit it set to 0, SCL line is held low until next command is written to transmit FIFO
+
+
+To use DW_apb_i2c as slave
+- disable DP_apb_i2c by writing 0 to IC_ENABLE.ENABLE
+- write to IC_SAR to set the slave address
+- write to IC_CON to specify type of addressing 7 or 10 bit by setting bit 3
+- enable DW_apb_i2c in slave-only made by IC_SLAVE_DISABLE bit = 0 and bit zero of MASTER_MODE = 0
+
+
+
+
+
