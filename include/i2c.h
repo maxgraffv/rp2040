@@ -6,7 +6,7 @@
 
 #include <stdlib.h>
 
-int i2c_simple_init( i2c_inst_t* i2c, u_int32_t baudrate );
+int i2c_simple_init( i2c_inst_t* i2c, uint32_t baudrate );
 
 int i2c_simple_write( i2c_inst_t* i2c , uint16_t i2c_address, uint8_t* data_tx, uint8_t data_len, uint8_t nostop);
 
