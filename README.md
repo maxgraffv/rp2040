@@ -73,6 +73,7 @@ Access takes 2 cycles at minimum (setup phase, access phase)
 
 ## DMA
 **Direct Memory Access**
+- can perform one read and one write access, per clock cycle
 - has seperate read and write master connections
 - performs bulk data transfers on processors behalf
 - let's processor attend other tasks or enter sleep
@@ -297,7 +298,7 @@ R/W = 1 - MASTER reads from SLAVE
 2 Bytes are transferred
 
 | S | 1 1 1 0 | A9 A8 | R/W | ACK |A7 ... A0 | ACK |
-|---|---------|---|----|----|-----|-----|----------|-----|
+|---|---------|-------|-----|-----|----------|-----|
 | START | Notifies of 10bit addressing | SLAVEaddress [9:8] | Read/Write bit | Sent by slave | SLAVE address [7:0] | Sent by slave |
 
 
