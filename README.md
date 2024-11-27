@@ -31,6 +31,23 @@ Description and examples for RP2040 elements, subsystems etc.
 - SIO - Single-cycle IO; Software Control of GPIO; SIO must be selected to drive GPIO
 - PIO - Programmable IO block; PIO must be selected to drive GPIO
 
+## Pinout
+- GPIOx
+- ADCy
+- QSPIx - QuadSPI, XPI, to be used as Flash access
+- USB DM and USB DP - USB Controller Data +/-
+- XIN and XOUT
+- RUN - ***low*** - reset; ***high*** - run
+- SWCLK and SWDIO
+- TESTEN - to be connected to GND; factory test mode pin
+- GND
+- IOVDD - 1.8V-3.3V
+- USB_VDD - 3.3V
+- ADC_AVDD - 3.3V
+- VREG VIN - internal core voltage regulator 1.8V-3.3V
+- VREG VOUT - internal core voltage regulator 1.1V; 100mA max current;
+- DVDD - digital core power supply 1.1V; Can be connected to VREG or other external source;
+
 ## Data Bus
 Data Paths are 32-bit wide  
 Priority levels are configured per master using BUS_PRIORITY register is BUSCTRL register block  
@@ -381,4 +398,14 @@ To use DW_apb_i2c as slave
 
 
 
+<br><br><br>
 
+## To Be Done
+- [ ] SleepState - Documentation page 164
+- [ ] Reset - Documentation page 166-170
+- [ ] PowerON - Documentation page 170-175
+- [ ] GPIO - Documentation pages 235 - 303
+- [ ] PIO - Documentation pages 309-366
+- [ ] Peripherals - besides i2c
+- [ ] ARMv6
+- [ ] SysCFG - System Config Block ?? no idea what and where
